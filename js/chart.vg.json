@@ -1,0 +1,74 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {"url": "https://raw.githubusercontent.com/ehoo0018/HomeworkW10/main/data/mcdonalds_dataset.csv"},
+    "params": [
+        {
+            "name": "country_selector",
+            "bind": {
+                "input": "select",
+                "options": [
+                    null,
+                    "USA",
+                    "CA",
+                    "UK",
+                    "DE"
+                ],
+                "labels": [
+                    "Show All",
+                    "United States of America",
+                    "Canada",
+                    "United Kingdom",
+                    "Germany"
+                ],
+                "name": "Country Selection: "
+            }
+        }
+    ],
+    "transform": [
+        {"calculate": "datum.is_broken === 'True' ? 0 : 1", "as": "broken"},
+        {"calculate": "datum.is_active === 'True' ? 1 : 0", "as": "active"},
+        {"filter": "country_selector == null || datum.country == country_selector"}
+    ],
+    "layer": [
+        {
+            "mark": "bar",
+            "encoding": {
+                "y": {
+                    "field": "state",
+                    "type": "nominal",
+                    "title": "States"
+                },
+                "x": {
+                    "aggregate": "sum", "field": "active",
+                    "type": "quantitative",
+                    "stack": "normalize",
+                    "title": "Proportion of Working Machines"
+                },
+                "color": {
+                    "field": "is_broken",
+                    "type": "nominal",
+                    "scale": {
+                        "domain": ["False", "True"]
+                    },
+                "title": "Broken"
+                },
+                "tooltip": [
+                    {"field": "country", "type": "nominal", "title": "Country: "}
+                ]
+                }
+        },
+        {
+            "mark": "rule",
+            "encoding": {
+                "x": {
+                    "aggregate": "mean",
+                    "field": "broken",
+                    "type": "quantitative"
+                },
+                "color": {"value": "red"},
+                "size": {"value": 3}
+            }
+        }
+    ]
+    
+    }
